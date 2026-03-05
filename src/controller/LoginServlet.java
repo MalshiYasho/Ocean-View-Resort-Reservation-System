@@ -48,10 +48,12 @@ public class LoginServlet extends HttpServlet {
             } else if ("staff".equalsIgnoreCase(user.getRole())) {
                 response.sendRedirect("staff-dashboard.html");
             } else {
-                response.sendRedirect("login.html?error=Role+not+defined");
+                request.setAttribute("errorMessage", "Role not defined!");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } else {
-            response.sendRedirect("login.html?error=Invalid+username+or+password");
+           request.setAttribute("errorMessage", "Invalid username or password");
+           request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }

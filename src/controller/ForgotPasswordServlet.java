@@ -18,11 +18,11 @@ public class ForgotPasswordServlet extends HttpServlet {
         User user = userDao.getUserByUsername(username);
 
         if (user != null) {
-            // For demo purposes, show password (in real app, send email)
+            
             request.setAttribute("message", "Your password is: " + user.getPassword());
         } else {
             request.setAttribute("message", "Username not found!");
         }
-        request.getRequestDispatcher("forgot-password.html").forward(request, response);
+        request.getRequestDispatcher("forgot-password.jsp").forward(request, response);
     }
 }

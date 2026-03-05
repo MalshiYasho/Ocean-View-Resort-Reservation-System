@@ -141,6 +141,12 @@ body{
     <div class="login-form">
         <h2>Login</h2>
 
+        <% if (request.getAttribute("errorMessage") != null) { %>
+            <div style="color: red; text-align: center; margin-bottom: 15px; font-size: 14px; font-weight: bold;">
+                <%= request.getAttribute("errorMessage") %>
+            </div>
+        <% } %>
+
         <form action="LoginServlet" method="post">
 
             <input type="text" id="username" name="username" placeholder="Username" required>
