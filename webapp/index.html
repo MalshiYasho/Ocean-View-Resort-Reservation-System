@@ -23,16 +23,18 @@ header{
 }
 
 .logo{
-    font-size:26px;
+    font-size:32px;
     font-weight:bold;
     color:#0093E9;
+    letter-spacing: 1px;
 }
 
 nav a{
     text-decoration:none;
     margin-left:45px;
     color:#333;
-    font-size:17px;
+    font-size:19px;
+    font-weight: 600;
     transition:0.3s;
 }
 
@@ -43,7 +45,7 @@ nav a:hover{
 .hero{
     height:90vh;
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-                url('https://images.unsplash.com/photo-1501117716987-c8e1ecb2103e');
+                url('images/hero-beach.jpg');
     background-size:cover;
     background-position:center;
     display:flex;
@@ -151,44 +153,67 @@ nav a:hover{
 .contact{
     padding:100px 20px;
     text-align:center;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                 url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4');
     background-size:cover;
     background-position:center;
     color:white;
 }
 
+.contact-overlay {
+    background: rgba(0, 0, 0, 0.5); 
+    width: 100%;
+    height: 100%;
+    padding: 80px 20px;
+    text-align: center;
+}
+
 .contact h2{
-    font-size:38px;
-    margin-bottom:20px;
+    font-size: 36px;
+    margin-bottom: 50px;
+    letter-spacing: 2px;
 }
 
-.contact p.description{
-    max-width:700px;
-    margin:0 auto 40px auto;
-    font-size:18px;
-    line-height:1.6;
+.contact-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.contact-details{
-    display:flex;
-    justify-content:center;
-    gap:60px;
-    flex-wrap:wrap;
-    font-size:16px;
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+    min-width: 250px;
 }
 
-.contact-details div{
-    background:rgba(255,255,255,0.1);
-    padding:20px 30px;
-    border-radius:10px;
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    background: #0093E9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
 }
 
-.contact-details strong{
-    display:block;
-    font-size:18px;
-    margin-bottom:8px;
-    color:#00C9A7;
+.info strong {
+    display: block;
+    font-size: 16px;
+    color: #00C9A7; 
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.info p {
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 5px;
 }
 
 footer{
@@ -229,7 +254,7 @@ footer{
     <div class="room-container">
 
         <div class="room-card">
-            <img src="https://images.unsplash.com/photo-1560067174-8946b23e6a6e">
+            <img src="images/room1.jpg">
             <div class="room-card-content">
                 <h3>Deluxe Room</h3>
                 <p>Modern design with comfortable amenities and garden view.</p>
@@ -238,7 +263,7 @@ footer{
         </div>
 
         <div class="room-card">
-            <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa">
+            <img src="images/room2.jpg">
             <div class="room-card-content">
                 <h3>Sea View Suite</h3>
                 <p>Enjoy panoramic ocean views with premium facilities.</p>
@@ -247,7 +272,7 @@ footer{
         </div>
 
         <div class="room-card">
-            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b">
+            <img src="images/room3.jpg">
             <div class="room-card-content">
                 <h3>Family Room</h3>
                 <p>Spacious room ideal for family vacations and relaxation.</p>
@@ -256,7 +281,7 @@ footer{
         </div>
 
         <div class="room-card">
-            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427">
+            <img src="images/room4.jpg">
             <div class="room-card-content">
                 <h3>Double Room</h3>
                 <p>Perfect for couples with cozy ambiance and elegant design.</p>
@@ -268,27 +293,32 @@ footer{
 </section>
 
 <section class="contact" id="contact">
-    <h2>Ocean View Resort</h2>
-    <p class="description">
-        Located in the heart of Galle, Ocean View Resort offers world-class hospitality,
-        stunning beachfront views, and unforgettable experiences tailored for relaxation
-        and luxury.
-    </p>
+    <div class="contact-overlay">
+        <h2>Get In Touch</h2>
+        <div class="contact-container">
+            <div class="contact-item">
+                <div class="icon-circle">✉</div>
+                <div class="info">
+                    <strong>Email Us</strong>
+                    <p>info@oceanviewresort.com</p>
+                </div>
+            </div>
 
-    <div class="contact-details">
-        <div>
-            <strong>📍 Location</strong>
-            45 Beach Road, Galle, Sri Lanka
-        </div>
+            <div class="contact-item">
+                <div class="icon-circle">📍</div>
+                <div class="info">
+                    <strong>Locate Us</strong>
+                    <p>45 Beach Road, Galle 80000, Sri Lanka.</p>
+                </div>
+            </div>
 
-        <div>
-            <strong>📞 Phone</strong>
-            +94 91 123 4567
-        </div>
-
-        <div>
-            <strong>✉ Email</strong>
-            info@oceanviewresort.com
+            <div class="contact-item">
+                <div class="icon-circle">📞</div>
+                <div class="info">
+                    <strong>Call Us</strong>
+                    <p>+94 91 123 4567</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
