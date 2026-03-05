@@ -123,7 +123,7 @@
             <a href="calculate-bill.jsp" style="background: #0093E9; color: white;">Calculate Bill</a>
             <a href="print-bill.jsp">Print Bill</a>
             <a href="help.jsp">Help</a>
-            <a href="login.jsp">Logout</a>
+            <a href="LogoutServlet">Logout</a>
         </div>
 
         <div class="main">

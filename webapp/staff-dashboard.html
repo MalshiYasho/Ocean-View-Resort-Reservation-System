@@ -116,8 +116,8 @@
         <a href="view-reservation.jsp">View Reservations</a>
         <a href="calculate-bill.jsp">Calculate Bill</a>
         <a href="print-bill.jsp">Print Bill</a>
-        <a href="help.html">Help</a>
-        <a href="login.jsp">Logout</a>
+        <a href="help.jsp">Help</a>
+        <a href="LogoutServlet">Logout</a>
     </div>
 
     <div class="main">
@@ -129,17 +129,17 @@
 
         <div class="cards">
 
-            <div class="card">
+            <div class="card" onclick="location.href='add-reservation.jsp'">
                 <h3>Add New Reservation</h3>
                 <p>Create new room bookings for customers.</p>
             </div>
 
-            <div class="card">
+            <div class="card" onclick="location.href='view-reservation.jsp'">
                 <h3>Display Reservations</h3>
                 <p>Search and view reservation details.</p>
             </div>
 
-            <div class="card">
+            <div class="card" onclick="location.href='calculate-bill.jsp'">
                 <h3>Calculate & Print Bill</h3>
                 <p>Generate final bill and print invoice.</p>
             </div>

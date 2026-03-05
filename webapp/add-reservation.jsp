@@ -69,6 +69,8 @@
             }
 
             .form-box button {
+                display: block;        
+                margin: 0 auto;
                 padding: 12px;
                 background: #0093E9;
                 color: white;
@@ -76,6 +78,7 @@
                 border-radius: 6px;
                 cursor: pointer;
             }
+            
         </style>
     </head>
 
@@ -89,8 +92,9 @@
                 <a href="add-reservation.jsp">Add Reservation</a>
                 <a href="view-reservation.jsp">View Reservation</a>
                 <a href="calculate-bill.jsp">Calculate Bill</a>
-                <a href="help.html">Help</a>
-                <a href="login.jsp">Logout</a>
+                <a href="Bill-bill.jsp">Print Bill</a>
+                <a href="help.jsp">Help</a>
+                <a href="LogoutServlet">Logout</a>
             </div>
 
             <div class="main">

@@ -5,41 +5,44 @@
 
 <style>
 
-body{
-   margin:0;
-   font-family:Segoe UI;
+*{
+   margin: 0;
+   padding:0;
+   box-sizing:border-box;
+   font-family:'Segoe UI', sans-serif;
+ }        
+
+.container {
+   display: flex;
+   height: 100vh;
 }
 
-.container{
-   display:flex;
-   height:100vh;
+.sidebar {
+   width: 250px;
+   background: #1e1e2f;
+   padding: 25px;
+   color: white;
 }
 
-.sidebar{
-   width:250px;
-   background:#1e1e2f;
-   padding:25px;
-   color:white;
+.sidebar h2 {
+   margin-bottom: 35px;
+   font-size: 22px;
+   color: #0093E9;
 }
 
-.sidebar h2{
-   color:#0093E9;
-   margin-bottom:30px;
+.sidebar a {
+   display: block;
+   padding: 12px 15px;
+   margin-bottom: 12px;
+   text-decoration: none;
+   color: #ccc;
+   border-radius: 6px;
 }
 
-.sidebar a{
-   display:block;
-   color:#ccc;
-   padding:12px;
-   text-decoration:none;
-   border-radius:6px;
-   margin-bottom:10px;
-}
-
-.sidebar a:hover{
-   background:#0093E9;
-   color:white;
-}
+.sidebar a:hover {
+   background: #0093E9;
+   color: white;
+}        
 
 .main{
    flex:1;
