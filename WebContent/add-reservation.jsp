@@ -114,17 +114,17 @@
 
                         <input type="text" name="contact_number" placeholder="Contact Number" required>
 
-                        <select name="room_type">
-                            <option value="Single">Single</option>
-                            <option value="Double">Double</option>
-                            <option value="Deluxe">Deluxe</option>
+                       <select name="room_id">
+                            <option value="101">Single (101)</option>
+                            <option value="102">Double (102)</option>
+                            <option value="201">Deluxe (201)</option>
                         </select>
 
                         <label>Check In</label>
-                        <input type="date" name="check_in" required>
+                        <input type="date" name="check_in_date" required>
 
                         <label>Check Out</label>
-                        <input type="date" name="check_out" required>
+                        <input type="date" name="check_out_date" required>
 
                         <button type="submit">Add Reservation</button>
 

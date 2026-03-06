@@ -163,10 +163,10 @@
                         <td style="font-weight: 500;"><%= u.getUsername() %></td>
                         <td><%= u.getRole() %></td>
                         <td class="actions">
-                            <a href="UserServlet?action=edit&id=<%= u.getUserId() %>">
+                            <a href="user?action=edit&id=<%= u.getUserId() %>">
                                 <button class="edit-btn">Edit</button>
                             </a>
-                            <a href="UserServlet?action=delete&id=<%= u.getUserId() %>" onclick="return confirm('Delete this user?')">
+                            <a href="user?action=delete&id=<%= u.getUserId() %>" onclick="return confirm('Delete this user?')">
                                 <button class="delete-btn">Delete</button>
                             </a>
                         </td>

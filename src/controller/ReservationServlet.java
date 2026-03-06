@@ -20,9 +20,17 @@ public class ReservationServlet extends HttpServlet {
             r.setGuestName(request.getParameter("guest_name"));
             r.setAddress(request.getParameter("address"));
             r.setContactNumber(request.getParameter("contact_number"));
-            r.setRoomType(request.getParameter("room_type"));
-            r.setCheckIn(request.getParameter("check_in"));
-            r.setCheckOut(request.getParameter("check_out"));
+
+            String roomIdStr = request.getParameter("room_id");
+            if (roomIdStr != null) {
+                r.setRoomId(Integer.parseInt(roomIdStr)); 
+            }
+
+            r.setCheckIn(request.getParameter("check_in_date"));
+            r.setCheckOut(request.getParameter("check_out_date"));
+
+
+            r.setTotalAmount(0.0);
 
             ReservationDAO dao = new ReservationDAO();
 

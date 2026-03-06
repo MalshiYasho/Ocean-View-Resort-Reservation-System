@@ -6,9 +6,10 @@ public class Reservation {
     private String guestName;
     private String address;
     private String contactNumber;
-    private String roomType;
+    private int roomId;
     private String checkIn;
     private String checkOut;
+    private double totalAmount;
 
     public int getReservationId() {
         return reservationId;
@@ -42,12 +43,12 @@ public class Reservation {
         this.contactNumber = contactNumber;
     }
 
-    public String getRoomType() {
-        return roomType;
+    public int getRoomId() {
+        return roomId;
     }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
     public String getCheckIn() {
@@ -64,6 +65,14 @@ public class Reservation {
 
     public void setCheckOut(String checkOut) {
         this.checkOut = checkOut;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
 }

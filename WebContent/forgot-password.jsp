@@ -26,8 +26,9 @@ body{
     top:30px;
     left:40px;
     text-decoration:none;
-    color:#333;
-    font-size:14px;
+    color:#000000;
+    font-size:16px;
+    font-weight: bold;
 }
 
 .login-container{
@@ -130,7 +131,7 @@ body{
 
 <body>
 
-<a href="login.jsp" class="back-home">← Back to Login</a>
+<a href="login.jsp" class="back-home"> Back to Login</a>
 
 <div class="login-container">
 
@@ -143,18 +144,18 @@ body{
     </div>
 
     <div class="login-form">
-        <h2>Forgot Password</h2>
+        <h2>Password Assistance</h2>
 
         <form action="ForgotPasswordServlet" method="post">
             <input type="text" name="username" placeholder="Enter your Username" required>
-            <button type="submit">Recover Password</button>
+            <button type="submit">Request Password Reset</button>
         </form>
 
         <div class="message">
             ${message}
         </div>
 
-        <a href="login.html">Back to Login</a>
+        <a href="login.jsp">Back to Login</a>
     </div>
 
 </div>

@@ -63,9 +63,9 @@
 }
 
 .top-bar .welcome{
-    font-size:16px;
+    font-size:20px;
     font-weight:500;
-    color:#555;
+    color:#0a0a0a;
 }
 
 .cards{

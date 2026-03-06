@@ -73,7 +73,7 @@
                 <h2>
                     <%= isEdit ? "Edit User" : "Add User" %>
                 </h2>
-                <form action="user" method="post">
+                <form action="UserServlet" method="post">
                     <% if(isEdit){ %>
                         <input type="hidden" name="userId" value="<%=user.getUserId()%>">
                         <% } %>

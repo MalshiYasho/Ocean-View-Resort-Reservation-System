@@ -26,8 +26,9 @@ body{
     top:30px;
     left:40px;
     text-decoration:none;
-    color:#333;
-    font-size:14px;
+    color:#0f0f0f;
+    font-size:16px;
+    font-weight: bold;
 }
 
 .login-container{
@@ -126,7 +127,7 @@ body{
 
 <body>
 
-<a href="index.html" class="back-home">← Back to Home</a>
+<a href="index.html" class="back-home"> Back to Home</a>
 
 <div class="login-container">
 
