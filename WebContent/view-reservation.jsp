@@ -1,9 +1,9 @@
-<%@ page import="java.sql.*" %>
-<%@ page import="util.dbconnection" %>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.sql.*, util.dbconnection" %>
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>View Reservation - Ocean View Resort</title>
     <style>
         * {
@@ -15,7 +15,7 @@
 
         .container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
         }
 
         .sidebar {
@@ -55,63 +55,78 @@
             margin-left: 250px;
         }
 
-        .top-bar {
-            margin-bottom: 40px;
-        }
-
-        .top-bar h1 {
+        h1 {
             font-size: 28px;
             color: #333;
+            margin-bottom: 20px;
         }
 
-        .search-container {
+        .table-container {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
         }
 
-        .search-container label {
-            font-weight: 600;
-            color: #555;
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            align-items: center;
         }
 
         input[type="text"] {
             padding: 10px;
-            width: 200px;
+            width: 300px;
             border-radius: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             outline: none;
         }
 
-        input[type="submit"] {
-            padding: 10px 20px;
+        .btn-search {
             background: #0093E9;
             color: white;
             border: none;
+            padding: 10px 20px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
         }
 
-        input[type="submit"]:hover {
-            background: #007bb5;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
 
-        .result {
-            margin-top: 25px;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            line-height: 1.8;
+        th {
+            background: #1e1e2f;
+            color: white;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #eee;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+            font-size: 14px;
+        }
+
+        .btn-delete {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 12px;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="sidebar">
@@ -126,52 +141,82 @@
         </div>
 
         <div class="main">
-            <div class="top-bar">
-                <h1>View Reservation</h1>
-            </div>
+            <h1>View Reservation</h1>
+            <div class="table-container">
+                <form method="get" class="search-bar">
+                    <input type="text" name="search" placeholder="Search Guest Name or ID..." 
+                           value="<%= (request.getParameter("search") != null) ? request.getParameter("search") : "" %>">
+                    <button type="submit" class="btn-search">Search</button>
+                    <a href="view-reservation.jsp" style="text-decoration:none; color:#666; margin-left:10px;">Reset</a>
+                </form>
 
-            <form method="get" class="search-container">
-                <label>Reservation ID:</label>
-                <input type="text" name="reservation_id" required>
-                <input type="submit" value="View Details">
-            </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Guest Name</th>
+                            <th>Contact</th>
+                            <th>Room</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Total (LKR)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%
+                            Connection con = null;
+                            try {
+                                con = dbconnection.getConnection();
+                                String search = request.getParameter("search");
+                                String sql = "SELECT * FROM reservations";
 
-            <% 
-                String resId = request.getParameter("reservation_id"); 
-                if(resId != null && !resId.isEmpty()){ 
-                    try { 
-                        Connection con = util.dbconnection.getConnection(); 
-                        String sql = "SELECT * FROM reservation WHERE reservation_id=?"; 
-                        PreparedStatement ps = con.prepareStatement(sql); 
-                        ps.setString(1, resId); 
-                        ResultSet rs = ps.executeQuery();
+                                if (search != null && !search.trim().isEmpty()) {
+                                    sql += " WHERE guest_name LIKE ? OR reservation_id = ?";
+                                }
 
-                        if(rs.next()){ 
-            %>
-            <div class="result">
-                <p><strong>Guest Name:</strong> <%= rs.getString("guest_name") %></p>
-                <p><strong>Address:</strong> <%= rs.getString("address") %></p>
-                <p><strong>Contact:</strong> <%= rs.getString("contact_number") %></p>
-                <p><strong>Room Type:</strong> <%= rs.getString("room_type") %></p>
-                <p><strong>Check-In:</strong> <%= rs.getDate("check_in") %></p>
-                <p><strong>Check-Out:</strong> <%= rs.getDate("check_out") %></p>
+                                PreparedStatement ps = con.prepareStatement(sql);
+                                if (search != null && !search.trim().isEmpty()) {
+                                    ps.setString(1, "%" + search + "%");
+                                    ps.setString(2, search.matches("\\d+") ? search : "-1");
+                                }
+
+                                ResultSet rs = ps.executeQuery();
+                                boolean hasData = false;
+                                while (rs.next()) {
+                                    hasData = true;
+                        %>
+                        <tr>
+                            <td><strong><%= rs.getInt("reservation_id") %></strong></td>
+                            <td><%= rs.getString("guest_name") %></td>
+                            <td><%= rs.getString("contact_number") %></td>
+                            <td>Unit <%= rs.getInt("room_id") %></td>
+                            <td><%= rs.getString("check_in_date") %></td>
+                            <td><%= rs.getString("check_out_date") %></td>
+                            <td><%= String.format("%.2f", rs.getDouble("total_amount")) %></td>
+                            <td>
+                                <a href="ReservationServlet?action=delete&id=<%= rs.getInt("reservation_id") %>&roomId=<%= rs.getInt("room_id") %>" 
+                                   class="btn-delete" onclick="return confirm('Cancel this reservation?')">Cancel</a>
+                            </td>
+                        </tr>
+                        <%
+                                }
+                                if (!hasData) {
+                        %>
+                        <tr><td colspan="8" style="text-align:center; padding:20px;">No reservations found.</td></tr>
+                        <%
+                                }
+                            } catch (Exception e) {
+                        %>
+                        <tr><td colspan="8" style="color:red; text-align:center;">Error: <%= e.getMessage() %></td></tr>
+                        <%
+                            } finally {
+                                if (con != null) con.close();
+                            }
+                        %>
+                    </tbody>
+                </table>
             </div>
-            <% 
-                        } else { 
-            %>
-            <div class="result" style="color: #e74c3c;">
-                No reservation found with ID: <strong><%= resId %></strong>
-            </div>
-            <% 
-                        } 
-                        rs.close(); 
-                        ps.close(); 
-                        con.close(); 
-                    } catch(Exception e){ 
-                        out.println("<div class='result'>Error: " + e.getMessage() + "</div>");
-                    }
-                }
-            %>
         </div>
     </div>
 </body>

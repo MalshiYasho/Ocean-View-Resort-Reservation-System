@@ -1,7 +1,8 @@
-<%@ page import="java.sql.*, java.util.Date, util.dbconnection" %>
+<%@ page import="java.sql.*, java.util.Date, java.text.DecimalFormat, util.dbconnection" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Print Bill - Ocean View Resort</title>
     <style>
         * {
@@ -33,7 +34,7 @@
         .sidebar h2 {
             margin-bottom: 35px;
             font-size: 22px;
-            color: #0093E9;
+            color: #0093E9; 
         }
 
         .sidebar a {
@@ -109,6 +110,7 @@
         .invoice-header h2 {
             font-size: 28px;
             letter-spacing: 1px;
+            color: #0093E9; 
         }
 
         .invoice-header p {
@@ -122,10 +124,6 @@
             justify-content: space-between;
             margin-bottom: 30px;
             line-height: 1.6;
-        }
-
-        .bill-info strong {
-            color: #000;
         }
 
         table {
@@ -164,43 +162,7 @@
             font-size: 13px;
         }
 
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-print {
-            background: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        @media print {
-            .sidebar, .search-container, .top-bar, .button-group {
-                display: none;
-            }
-            .main {
-                margin-left: 0;
-                padding: 0;
-            }
-            .invoice-box {
-                box-shadow: none;
-                border: none;
-                width: 100%;
-                max-width: 100%;
-            }
-        }
     </style>
-    <script>
-        function printInvoice() {
-            window.print();
-        }
-    </script>
 </head>
 <body>
 
@@ -218,7 +180,7 @@
 
     <div class="main">
         <div class="top-bar">
-            <h1>Print Bill</h1>
+            <h1>Invoice Summary</h1>
         </div>
 
         <form method="get" class="search-container">
@@ -231,20 +193,34 @@
             String id = request.getParameter("reservation_id");
             if(id != null && !id.isEmpty()){
                 try {
-                    Connection dbConn = util.dbconnection.getConnection();
-                    PreparedStatement st = dbConn.prepareStatement("SELECT * FROM reservation WHERE reservation_id=?");
+                    Connection dbConn = dbconnection.getConnection();
+                    String sql = "SELECT r.*, rm.room_type FROM reservations r " +
+                                 "JOIN rooms rm ON r.room_id = rm.room_id " +
+                                 "WHERE r.reservation_id=?";
+                    PreparedStatement st = dbConn.prepareStatement(sql);
                     st.setString(1, id);
                     ResultSet data = st.executeQuery();
                     
                     if(data.next()){
-                        Date inDate = data.getDate("check_in");
-                        Date outDate = data.getDate("check_out");
+                        Date inDate = data.getDate("check_in_date");
+                        Date outDate = data.getDate("check_out_date");
+                        String roomType = data.getString("room_type");
+                        
                         long timeDiff = outDate.getTime() - inDate.getTime();
                         long stayDays = timeDiff / (1000 * 60 * 60 * 24);
                         if(stayDays <= 0) stayDays = 1;
                         
-                        int dayRate = 5000;
-                        long finalAmount = stayDays * dayRate;
+                        double dayRate = 5000;
+                        if(roomType != null) {
+                            String typeLow = roomType.toLowerCase();
+                            if(typeLow.contains("deluxe")) dayRate = 15000;
+                            else if(typeLow.contains("sea view") || typeLow.contains("suite")) dayRate = 22000;
+                            else if(typeLow.contains("double")) dayRate = 12000;
+                            else if(typeLow.contains("family")) dayRate = 18000;
+                        }
+                        
+                        double finalAmount = stayDays * dayRate;
+                        DecimalFormat df = new DecimalFormat("#,###.00");
         %>
             <div class="invoice-box">
                 <div class="invoice-header">
@@ -256,12 +232,11 @@
                     <div>
                         <p><strong>Billed To:</strong></p>
                         <p><%= data.getString("guest_name") %></p>
-                        <p><%= data.getString("address") %></p>
-                        <p>Tel: <%= data.getString("contact_number") %></p>
+                        <p>Room No: <%= data.getInt("room_id") %></p>
                     </div>
                     <div class="text-right">
                         <p><strong>Bill ID:</strong> #RES-<%= id %></p>
-                        <p><strong>Date:</strong> <%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()) %></p>
+                        <p><strong>Date:</strong> <%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date()) %></p>
                     </div>
                 </div>
 
@@ -276,23 +251,19 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Accommodation - <%= data.getString("room_type") %> Room</td>
-                            <td class="text-right">LKR <%= dayRate %>.00</td>
+                            <td>Accommodation - <%= roomType %></td>
+                            <td class="text-right">LKR <%= df.format(dayRate) %></td>
                             <td class="text-right"><%= stayDays %></td>
-                            <td class="text-right">LKR <%= finalAmount %>.00</td>
+                            <td class="text-right">LKR <%= df.format(finalAmount) %></td>
                         </tr>
                         <tr class="total-row">
                             <td colspan="3" class="text-right">Total Amount</td>
-                            <td class="text-right">LKR <%= finalAmount %>.00</td>
+                            <td class="text-right">LKR <%= df.format(finalAmount) %></td>
                         </tr>
                     </tbody>
                 </table>
 
                 <p class="footer-note">Thank you for staying with us!</p>
-
-                <div class="button-group">
-                    <button onclick="printInvoice()" class="btn-print">Print Receipt</button>
-                </div>
             </div>
         <%
                     } else {
@@ -300,7 +271,7 @@
                     }
                     dbConn.close();
                 } catch(Exception err) {
-                    out.println("Error: " + err.getMessage());
+                    out.println("<div class='invoice-box'>Error: " + err.getMessage() + "</div>");
                 }
             }
         %>

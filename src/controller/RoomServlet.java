@@ -15,36 +15,51 @@ public class RoomServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String action = request.getParameter("action");
-        if (action == null) action = "list";
+        if (action == null)
+            action = "list";
 
-        switch (action) {
-            case "edit":
-                showEditForm(request, response);
-                break;
-            case "delete":
-                deleteRoom(request, response);
-                break;
-            default:
-                listRooms(request, response);
-                break;
+        try {
+            switch (action) {
+                case "edit":
+                    showEditForm(request, response);
+                    break;
+                case "delete":
+                    deleteRoom(request, response);
+                    break;
+                default:
+                    listRooms(request, response);
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("RoomServlet?action=list");
         }
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String action = request.getParameter("action");
+        if (action == null)
+            return;
 
-        switch (action) {
-            case "insert":
-                insertRoom(request, response);
-                break;
-            case "update":
-                updateRoom(request, response);
-                break;
+        try {
+            switch (action) {
+                case "insert":
+                    insertRoom(request, response);
+                    break;
+                case "update":
+                    updateRoom(request, response);
+                    break;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("RoomServlet?action=list");
         }
+
     }
 
     private void listRooms(HttpServletRequest request, HttpServletResponse response)
@@ -56,40 +71,50 @@ public class RoomServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int roomId = Integer.parseInt(request.getParameter("roomId"));
-        Room existingRoom = roomDAO.getRoomById(roomId);
-        request.setAttribute("room", existingRoom);
-        request.getRequestDispatcher("edit-room.jsp").forward(request, response);
+        String idStr = request.getParameter("roomId");
+        if (idStr != null) {
+            int roomId = Integer.parseInt(idStr);
+            Room existingRoom = roomDAO.getRoomById(roomId);
+            request.setAttribute("room", existingRoom);
+        }
+        request.getRequestDispatcher("add-room.jsp").forward(request, response);
     }
 
-    private void insertRoom(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        int roomId = Integer.parseInt(request.getParameter("roomId"));
+    private void insertRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String type = request.getParameter("type");
-        double price = Double.parseDouble(request.getParameter("price"));
+        String priceStr = request.getParameter("price");
         String status = request.getParameter("status");
 
-        Room room = new Room(roomId, type, price, status);
+        double price = (priceStr != null && !priceStr.isEmpty()) ? Double.parseDouble(priceStr) : 0.0;
+
+        Room room = new Room(0, type, price, status);
         roomDAO.addRoom(room);
         response.sendRedirect("RoomServlet?action=list");
     }
 
-    private void updateRoom(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        int roomId = Integer.parseInt(request.getParameter("roomId"));
+    private void updateRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String idStr = request.getParameter("roomId");
         String type = request.getParameter("type");
-        double price = Double.parseDouble(request.getParameter("price"));
+        String priceStr = request.getParameter("price");
         String status = request.getParameter("status");
+
+        int roomId = (idStr != null && !idStr.isEmpty()) ? Integer.parseInt(idStr) : 0;
+        double price = (priceStr != null) ? Double.parseDouble(priceStr) : 0.0;
 
         Room room = new Room(roomId, type, price, status);
         roomDAO.updateRoom(room);
         response.sendRedirect("RoomServlet?action=list");
     }
 
-    private void deleteRoom(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        int roomId = Integer.parseInt(request.getParameter("roomId"));
-        roomDAO.deleteRoom(roomId);
+    private void deleteRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String idStr = request.getParameter("roomId");
+        if (idStr != null) {
+            roomDAO.deleteRoom(Integer.parseInt(idStr));
+        }
         response.sendRedirect("RoomServlet?action=list");
     }
 }
+
+
+
+

@@ -1,17 +1,19 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="java.text.DecimalFormat" %>
 <%@ page import="util.dbconnection" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Calculate Bill - Ocean View Resort</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .container {
@@ -105,14 +107,31 @@
         .result {
             margin-top: 25px;
             background: white;
-            padding: 25px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            line-height: 2;
+            line-height: 2.2;
+            max-width: 600px;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .total-box {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px solid #0093E9;
+            font-size: 22px;
+            font-weight: bold;
+            color: #1e1e2f;
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="sidebar">
@@ -133,7 +152,7 @@
 
             <form method="get" class="search-container">
                 <label>Reservation ID:</label>
-                <input type="text" name="reservation_id" required>
+                <input type="text" name="reservation_id" placeholder="Enter ID e.g. 4" required>
                 <input type="submit" value="Calculate Amount">
             </form>
 
@@ -142,41 +161,74 @@
                 if(id != null && !id.isEmpty()){ 
                     try { 
                         Connection con = util.dbconnection.getConnection(); 
-                        PreparedStatement ps = con.prepareStatement("SELECT * FROM reservation WHERE reservation_id=?");
+                        String sql = "SELECT r.*, rm.room_type FROM reservations r " +
+                                     "JOIN rooms rm ON r.room_id = rm.room_id " +
+                                     "WHERE r.reservation_id=?";
+                        PreparedStatement ps = con.prepareStatement(sql);
                         ps.setString(1, id);
                         ResultSet rs = ps.executeQuery(); 
                         
                         if(rs.next()){ 
-                            Date checkIn = rs.getDate("check_in");
-                            Date checkOut = rs.getDate("check_out"); 
+                            Date checkIn = rs.getDate("check_in_date");
+                            Date checkOut = rs.getDate("check_out_date"); 
+                            String roomType = rs.getString("room_type");
                             
                             long diff = checkOut.getTime() - checkIn.getTime(); 
                             long days = diff / (1000 * 60 * 60 * 24); 
-                            
                             if(days <= 0) days = 1; 
                             
-                            int rate = 5000; 
-                            long total = days * rate; 
+                            double pricePerDay = 5000; 
+                            
+                            if(roomType != null) {
+                                String typeLow = roomType.toLowerCase();
+                                if(typeLow.contains("deluxe")) {
+                                    pricePerDay = 15000;
+                                } else if(typeLow.contains("sea view") || typeLow.contains("suite")) {
+                                    pricePerDay = 22000;
+                                } else if(typeLow.contains("double")) {
+                                    pricePerDay = 12000;
+                                } else if(typeLow.contains("family")) {
+                                    pricePerDay = 18000;
+                                }
+                            }
+
+                            double finalTotal = days * pricePerDay;
+                            DecimalFormat df = new DecimalFormat("#,###.00");
             %>
             <div class="result">
-                <p><strong>Guest Name:</strong> <%= rs.getString("guest_name") %></p>
-                <p><strong>Room Type:</strong> <%= rs.getString("room_type") %></p>
-                <p><strong>Stay Duration:</strong> <%= days %> Day(s)</p>
-                <p><strong>Rate per Day:</strong> Rs. <%= rate %></p>
-                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-                <p style="font-size: 18px; color: #2c3e50;"><strong>Total Bill Amount:</strong> Rs. <%= total %></p>
+                <div class="bill-row">
+                    <span><strong>Guest Name:</strong></span>
+                    <span><%= rs.getString("guest_name") %></span>
+                </div>
+                <div class="bill-row">
+                    <span><strong>Room Category:</strong></span>
+                    <span><%= roomType %></span>
+                </div>
+                <div class="bill-row">
+                    <span><strong>Stay Duration:</strong></span>
+                    <span><%= days %> Day(s)</span>
+                </div>
+                <div class="bill-row">
+                    <span><strong>Rate per Day:</strong></span>
+                    <span>LKR <%= df.format(pricePerDay) %></span>
+                </div>
+                
+                <div class="total-box">
+                    <span>Total Bill:</span>
+                    <span>LKR <%= df.format(finalTotal) %></span>
+                </div>
             </div>
             <% 
                         } else { 
             %>
-            <div class="result" style="color: #e74c3c;">
+            <div class="result" style="color: #e74c3c; text-align: center;">
                 No reservation record found for ID: <strong><%= id %></strong>
             </div>
             <% 
                         }
                         con.close();
                     } catch(Exception e) { 
-                        out.println("<div class='result'>Error: " + e.getMessage() + "</div>"); 
+                        out.println("<div class='result' style='color:red;'>SQL Error: " + e.getMessage() + "</div>"); 
                     } 
                 }
             %>

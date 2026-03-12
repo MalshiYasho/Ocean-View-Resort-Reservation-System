@@ -12,12 +12,11 @@ public class RoomDAO {
         boolean success = false;
         try (Connection con = dbconnection.getConnection();
              PreparedStatement ps = con.prepareStatement(
-                 "INSERT INTO rooms (room_id, type, price, status) VALUES (?, ?, ?, ?)")) {
+                 "INSERT INTO rooms (room_type, price_per_night, status) VALUES (?, ?, ?)")) {
 
-            ps.setInt(1, room.getRoomId());
-            ps.setString(2, room.getType());
-            ps.setDouble(3, room.getPrice());
-            ps.setString(4, room.getStatus());
+            ps.setString(1, room.getType());
+            ps.setDouble(2, room.getPrice());
+            ps.setString(3, room.getStatus());
 
             success = ps.executeUpdate() > 0;
 
@@ -31,7 +30,7 @@ public class RoomDAO {
         boolean success = false;
         try (Connection con = dbconnection.getConnection();
              PreparedStatement ps = con.prepareStatement(
-                 "UPDATE rooms SET type=?, price=?, status=? WHERE room_id=?")) {
+                 "UPDATE rooms SET room_type=?, price_per_night=?, status=? WHERE room_id=?")) {
 
             ps.setString(1, room.getType());
             ps.setDouble(2, room.getPrice());
@@ -71,8 +70,8 @@ public class RoomDAO {
             if (rs.next()) {
                 room = new Room(
                         rs.getInt("room_id"),
-                        rs.getString("type"),
-                        rs.getDouble("price"),
+                        rs.getString("room_type"),
+                        rs.getDouble("price_per_night"),
                         rs.getString("status")
                 );
             }
@@ -92,8 +91,8 @@ public class RoomDAO {
             while (rs.next()) {
                 rooms.add(new Room(
                         rs.getInt("room_id"),
-                        rs.getString("type"),
-                        rs.getDouble("price"),
+                        rs.getString("room_type"),
+                        rs.getDouble("price_per_night"),
                         rs.getString("status")
                 ));
             }

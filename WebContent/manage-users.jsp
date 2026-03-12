@@ -135,7 +135,7 @@
             <a href="admin-dashboard.jsp">Dashboard</a>
             <a href="manage-rooms.jsp">Manage Rooms</a>
             <a href="manage-users.jsp">Manage Users</a>
-            <a href="view-reports.jsp">Reports</a>
+            <a href="view-reports.jsp">View Reports</a>
             <a href="help.jsp">Help</a>
             <a href="LogoutServlet">Logout</a>
         </div>
@@ -163,11 +163,11 @@
                         <td style="font-weight: 500;"><%= u.getUsername() %></td>
                         <td><%= u.getRole() %></td>
                         <td class="actions">
-                            <a href="user?action=edit&id=<%= u.getUserId() %>">
-                                <button class="edit-btn">Edit</button>
+                            <a href="UserServlet?action=edit&id=<%= u.getUserId() %>">
+                                <button type="button" class="edit-btn">Edit</button>
                             </a>
-                            <a href="user?action=delete&id=<%= u.getUserId() %>" onclick="return confirm('Delete this user?')">
-                                <button class="delete-btn">Delete</button>
+                            <a href="UserServlet?action=delete&id=<%= u.getUserId() %>" onclick="return confirm('Delete this user?')">
+                                <button type="button" class="delete-btn">Delete</button>
                             </a>
                         </td>
                     </tr>

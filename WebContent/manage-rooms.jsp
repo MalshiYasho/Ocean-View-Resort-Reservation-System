@@ -4,7 +4,7 @@
 
 <%
     RoomDAO dao = new RoomDAO();
-    List<Room> rooms = dao.getAllRooms();
+    List<Room> roomsList = dao.getAllRooms();
 %>
 
 <!DOCTYPE html>
@@ -133,7 +133,7 @@
             <a href="admin-dashboard.jsp">Dashboard</a>
             <a href="manage-rooms.jsp">Manage Rooms</a>
             <a href="manage-users.jsp">Manage Users</a>
-            <a href="view-reports.jsp">Reports</a>
+            <a href="view-reports.jsp">View Reports</a>
             <a href="help.jsp">Help</a>
             <a href="LogoutServlet">Logout</a>
         </div>
@@ -155,23 +155,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if(rooms != null) {
-                        for(Room r : rooms){ %>
+                    <% if(roomsList != null && !roomsList.isEmpty()) {for(Room r : roomsList){ %>
                     <tr>
                         <td>#<%= r.getRoomId() %></td>
                         <td><%= r.getType() %></td>
                         <td><%= r.getPrice() %></td>
                         <td><%= r.getStatus() %></td>
                         <td class="actions">
-                            <a href="edit-room.jsp?id=<%=r.getRoomId()%>">
-                                <button class="edit-btn">Edit</button>
+                            <a href="RoomServlet?action=edit&roomId=<%=r.getRoomId()%>">
+                                <button type="button" class="edit-btn">Edit</button>
                             </a>
-                            <a href="RoomServlet?action=delete&id=<%=r.getRoomId()%>">
-                                <button class="delete-btn">Delete</button>
+                            <a href="RoomServlet?action=delete&roomId=<%=r.getRoomId()%>" onclick="return confirm('Delete this room?')">
+                                <button type="button" class="delete-btn">Delete</button>
                             </a>
                         </td>
                     </tr>
-                    <% } } %>
+                    <% } } else { %>
+                        <tr><td colspan="5">No rooms found in the database.</td></tr>
+                    <% } %>
                 </tbody>
             </table>
         </div>

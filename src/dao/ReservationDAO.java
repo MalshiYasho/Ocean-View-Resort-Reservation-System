@@ -27,9 +27,17 @@ public class ReservationDAO {
             ps.setDouble(7, r.getTotalAmount());
 
             int result = ps.executeUpdate();
+            
             if (result > 0) {
+
+                String updateRoomSql = "UPDATE rooms SET status = 'Booked' WHERE room_id = ?";
+                PreparedStatement psUpdate = con.prepareStatement(updateRoomSql);
+                psUpdate.setInt(1, r.getRoomId());
+                psUpdate.executeUpdate();
+
                 status = true;
             }
+            
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("SQL ERROR: " + e.getMessage());
@@ -61,6 +69,33 @@ public class ReservationDAO {
 
         return rs;
 
+    }
+
+
+    public boolean deleteReservation(int id, int roomId) {
+        boolean status = false;
+        try {
+            Connection con = dbconnection.getConnection();
+            
+            String sql = "DELETE FROM reservations WHERE reservation_id=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            int result = ps.executeUpdate();
+
+            if (result > 0) {
+                
+                String updateRoomSql = "UPDATE rooms SET status = 'Available' WHERE room_id = ?";
+                PreparedStatement psUpdate = con.prepareStatement(updateRoomSql);
+                psUpdate.setInt(1, roomId);
+                psUpdate.executeUpdate();
+
+                status = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("DELETE ERROR: " + e.getMessage());
+        }
+        return status;
     }
     
 }
